@@ -1,15 +1,156 @@
 <!DOCTYPE html>
-<html>
+<html lang="tr">
 <head>
-  <title>QR Panel</title>
-  <meta charset="UTF-8">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yönetici QR Kod Paneli</title>
+    <!-- Tailwind CSS kütüphanesi -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7fafc;
+        }
+    </style>
 </head>
-<body>
-  <h1>QR Panel Yayında!</h1>
-  <p>Bu sayfa test içindir. Gerçek panel dosyası QR ile açılacak.</p>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
 
-  <a href="panel.html">
-    <img src="https://api.qrserver.com/v1/create-qr-code/?data=https://emre16-61.github.io/yonetici-qr-kod/panel.html&size=150x150" alt="QR Kodu">
-  </a>
+    <div class="bg-white p-8 rounded-lg shadow-xl max-w-lg w-full">
+        <h1 class="text-3xl font-bold text-center text-gray-800 mb-6">QR Yönetici Paneli</h1>
+        
+        <!-- Metin Giriş ve QR Oluşturma Formu -->
+        <div class="space-y-4">
+            <div>
+                <label for="qrText" class="block text-sm font-medium text-gray-700">QR Kod Metni</label>
+                <textarea id="qrText" rows="4" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2" placeholder="Düğün, nişan veya dış çekim metnini buraya yazın..."></textarea>
+            </div>
+            
+            <div>
+                <label for="qrType" class="block text-sm font-medium text-gray-700">Çekim Türü</label>
+                <select id="qrType" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md shadow-sm">
+                    <option value="düğün">Düğün</option>
+                    <option value="nişan_dis_cekim">Nişan ve Dış Çekim</option>
+                </select>
+            </div>
+
+            <button id="saveButton" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">
+                Metni Kaydet ve QR Kodu Oluştur
+            </button>
+        </div>
+        
+        <div id="statusMessage" class="mt-4 text-center text-sm font-medium text-green-600 hidden">
+            Metin başarıyla kaydedildi ve QR kodu oluşturuldu!
+        </div>
+
+        <div class="mt-8">
+            <h2 class="text-xl font-semibold text-center text-gray-800 mb-4">Oluşturulan QR Kodlar</h2>
+            <div id="qrCodeContainer" class="flex flex-col items-center space-y-6">
+                <!-- Buraya dinamik olarak QR kodları eklenecek -->
+                <div id="düğün-qr" class="text-center p-4 bg-gray-50 rounded-lg shadow-inner w-full">
+                    <h3 class="text-lg font-semibold text-gray-700 mb-2">Düğün QR Kodu</h3>
+                    <img id="düğün-qr-img" src="https://placehold.co/200x200?text=QR+Kodu+Oluştur" alt="Düğün QR Kodu" class="mx-auto w-48 h-48 border-2 border-gray-300 rounded-lg shadow-md">
+                </div>
+                <div id="nişan_dis_cekim-qr" class="text-center p-4 bg-gray-50 rounded-lg shadow-inner w-full">
+                    <h3 class="text-lg font-semibold text-gray-700 mb-2">Nişan & Dış Çekim QR Kodu</h3>
+                    <img id="nişan_dis_cekim-qr-img" src="https://placehold.co/200x200?text=QR+Kodu+Oluştur" alt="Nişan ve Dış Çekim QR Kodu" class="mx-auto w-48 h-48 border-2 border-gray-300 rounded-lg shadow-md">
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Firebase kütüphaneleri -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getFirestore, doc, setDoc, onSnapshot, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Firebase yapılandırma objenizi buraya yapıştırın.
+        // Bu kod, sizin Firebase konsolunuzdan kopyaladığınız koddur.
+        const firebaseConfig = {
+            apiKey: "AIzaSyAZxHq28my4VLR-xX94wvkr6Gf-ohyeH98",
+            authDomain: "e-y-yonetici.firebaseapp.com",
+            databaseURL: "https://e-y-yonetici-default-rtdb.firebaseio.com",
+            projectId: "e-y-yonetici",
+            storageBucket: "e-y-yonetici.firebasestorage.app",
+            messagingSenderId: "954162170596",
+            appId: "1:954162170596:web:f93d6ea49747ad67dafaf1",
+            measurementId: "G-8CBJM61ZTW"
+        };
+        
+        // Firebase uygulamasını başlat
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // HTML elemanlarını seç
+        const qrTextEl = document.getElementById('qrText');
+        const qrTypeEl = document.getElementById('qrType');
+        const saveButton = document.getElementById('saveButton');
+        const düğünQrImg = document.getElementById('düğün-qr-img');
+        const nişanQrImg = document.getElementById('nişan_dis_cekim-qr-img');
+        const statusMessageEl = document.getElementById('statusMessage');
+
+        // Firestore'a metni kaydetme ve QR kodu oluşturma işlevi
+        const saveTextAndGenerateQR = async () => {
+            const text = qrTextEl.value;
+            const type = qrTypeEl.value;
+
+            if (!text) {
+                alert('Lütfen bir metin girin!');
+                return;
+            }
+
+            try {
+                // Firestore'da 'qr_data' koleksiyonuna kaydet
+                const docRef = doc(db, "qr_data", type);
+                await setDoc(docRef, { text, type });
+                
+                statusMessageEl.textContent = 'Metin başarıyla kaydedildi!';
+                statusMessageEl.classList.remove('hidden');
+
+            } catch (e) {
+                console.error("Metin kaydedilirken hata oluştu: ", e);
+                statusMessageEl.textContent = 'Hata oluştu: Metin kaydedilemedi!';
+                statusMessageEl.classList.remove('hidden');
+                statusMessageEl.classList.remove('text-green-600');
+                statusMessageEl.classList.add('text-red-600');
+            }
+        };
+
+        // Firestore'daki verileri dinleme ve QR kodlarını güncelleme işlevi
+        const listenForData = () => {
+            const düğünDocRef = doc(db, "qr_data", "düğün");
+            const nişanDocRef = doc(db, "qr_data", "nişan_dis_cekim");
+
+            // Düğün verisini dinle
+            onSnapshot(düğünDocRef, (docSnap) => {
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(data.text)}&size=200x200`;
+                    düğünQrImg.src = qrUrl;
+                    qrTextEl.value = data.text; // En son kaydedilen metni forma yükle
+                } else {
+                    console.log("Düğün metni bulunamadı.");
+                }
+            });
+
+            // Nişan/Dış çekim verisini dinle
+            onSnapshot(nişanDocRef, (docSnap) => {
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(data.text)}&size=200x200`;
+                    nişanQrImg.src = qrUrl;
+                } else {
+                    console.log("Nişan/Dış çekim metni bulunamadı.");
+                }
+            });
+        };
+
+        // Sayfa yüklendiğinde verileri dinlemeye başla ve butona olay dinleyicisi ekle
+        document.addEventListener('DOMContentLoaded', () => {
+            listenForData();
+            saveButton.addEventListener('click', saveTextAndGenerateQR);
+        });
+
+    </script>
 </body>
 </html>
