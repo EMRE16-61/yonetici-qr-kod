@@ -121,11 +121,11 @@
                     if (reservation.eventType === 'dugun') {
                         qrKodText = 'Düğün Çekimi İçin QR Kodu';
                         qrLink = `musteri_sayfasi.html?type=dugun&id=${reservationId}`;
-                    } else { // nisan ve dis_cekim için aynı sayfa
+                    } else if (reservation.eventType === 'nisan' || reservation.eventType === 'dis_cekim') { // nisan ve dis_cekim için aynı sayfa
                         qrKodText = 'Nişan / Dış Çekim İçin QR Kodu';
                         qrLink = `musteri_sayfasi.html?type=nisan_dis_cekim&id=${reservationId}`;
                     }
-
+                    
                     reservationItem.innerHTML = `
                         <div class="flex justify-between items-center bg-gray-50 p-4 rounded-md shadow-sm">
                             <span class="text-gray-800 font-medium">${reservation.name} (${reservation.eventType.toUpperCase()})</span>
