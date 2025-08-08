@@ -120,10 +120,10 @@
                     let qrLink = '';
                     if (reservation.eventType === 'dugun') {
                         qrKodText = 'Düğün Çekimi İçin QR Kodu';
-                        qrLink = `musteri_sayfasi.html?type=dugun&id=${reservationId}`;
+                        qrLink = `https://emre16-61.github.io/yonetici-qr-kod/musteri_sayfasi.html?type=dugun&id=${reservationId}`;
                     } else if (reservation.eventType === 'nisan' || reservation.eventType === 'dis_cekim') { // nisan ve dis_cekim için aynı sayfa
                         qrKodText = 'Nişan / Dış Çekim İçin QR Kodu';
-                        qrLink = `musteri_sayfasi.html?type=nisan_dis_cekim&id=${reservationId}`;
+                        qrLink = `https://emre16-61.github.io/yonetici-qr-kod/musteri_sayfasi.html?type=nisan_dis_cekim&id=${reservationId}`;
                     }
                     
                     reservationItem.innerHTML = `
