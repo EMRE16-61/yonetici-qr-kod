@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Katalog Görüntüleme</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-white text-gray-900">
+    <div class="a4-page mx-auto max-w-screen-lg p-4">
+        <!-- Üstteki Marka Fotoğrafı -->
+        <div class="w-full h-48 bg-gray-200 rounded-lg flex items-center justify-center overflow-hidden shadow-sm">
+            <img
+                src="https://placehold.co/800x300/E0E0E0/333333?text=MARKANIZIN+FOTOSU"
+                alt="Markanızın Fotoğrafı"
+                class="w-full h-full object-cover"
+            />
+        </div>
+
+        <!-- Orta İçerik: Sol video rehberi + sağ QR kod -->
+        <div class="flex flex-col md:flex-row items-center justify-center gap-8 mt-6 flex-grow">
+            <!-- Sol Sütun -->
+            <div class="w-full md:w-1/2 lg:w-2/5 p-6 bg-red-800 rounded-lg shadow-md h-full flex flex-col justify-center">
+                <h3 class="text-lg font-semibold text-white mb-4">VİDEONUZU İNDİRME REHBERİ</h3>
+                <ol class="list-decimal list-inside space-y-3 text-gray-900">
+                    <li class="font-medium">
+                        <span class="text-gray-900">Hızlı Tarama:</span> <span class="text-white">Akıllı telefonunuzun kamerasını veya tercih ettiğiniz bir QR kod okuyucu uygulamasını kullanarak yukarıdaki özel kodu taratın.</span>
+                    </li>
+                    <li class="font-medium">
+                        <span class="text-gray-900">Bağlantıya Dokunun:</span> <span class="text-white">Tarama işlemi tamamlandığında ekranda beliren güvenli bağlantıya dokunarak videonuzun bulunduğu sayfaya yönlenin.</span>
+                    </li>
+                    <li class="font-medium">
+                        <span class="text-gray-900">Videonuzu Keşfedin:</span> <span class="text-white">Açılan sayfada, sizin için özel olarak hazırlanmış videoyu bulun ve seçin.</span>
+                    </li>
+                    <li class="font-medium">
+                        <span class="text-gray-900">Tek Tıkla İndirme:</span> <span class="text-white">Seçtiğiniz videonun altında yer alan "İndir" butonuna basarak videoyu cihazınıza kolayca kaydedin.</span>
+                    </li>
+                    <li class="font-medium">
+                        <span class="text-gray-900">Anın Keyfini Çıkarın:</span> <span class="text-white">Videonuz artık parmaklarınızın ucunda! İstediğiniz zaman, istediğiniz yerde izlemenin keyfini çıkarın.</span>
+                    </li>
+                </ol>
+            </div>
+
+            <!-- Sağ Sütun: QR Kod -->
+            <div class="w-full md:w-1/2 lg:w-3/5 flex flex-col items-center justify-center py-8">
+                <h2 class="text-3xl font-bold text-gray-800 mb-4 text-center">ÖZEL İÇERİĞİNİZE ERİŞİN</h2>
+                <div class="w-64 h-64 bg-gray-100 border-4 border-gray-950 rounded-lg flex items-center justify-center p-3 shadow-2xl">
+                    <img src="https://placehold.co/300x300?text=QR+KOD" alt="QR Kod" class="w-full h-full object-contain" />
+                </div>
+                <p class="mt-4 text-base text-gray-700 text-center font-semibold uppercase">
+                    GÖKYÜZÜNDEN YAKALANAN EŞSİZ GÖRÜNTÜLERLE ÖLÜMSÜZLEŞTİRİLEN DİJİTAL HİKAYENİZİ KEŞFEDİN. KODU TARAYIN VE UNUTULMAZ BİR KEŞFE ÇIKIN!
+                </p>
+            </div>
+        </div>
+
+        <!-- Teşekkür Mesajı -->
+        <div class="text-center bg-gray-900 p-8 rounded-lg shadow-md mt-6">
+            <h3 class="text-2xl font-bold text-white mb-4">BİZİ TERCİH ETTİĞİNİZ İÇİN TEŞEKKÜR EDERİZ!</h3>
+            <p class="text-base font-semibold text-gray-200 leading-relaxed uppercase">
+                DEĞERLİ MÜŞTERİMİZ,<br><br>
+                HAYATINIZIN EN ÖZEL ANINIZI ÖLÜMSÜZLEŞTİRMEK İÇİN BİZİ TERCİH ETTİĞİNİZ İÇİN MİNNETTARIZ.<br><br>
+                GÖZ ALICI DRONE ÇEKİMLERİMİZLE, HİKAYENİZE EŞSİZ BİR BAKIŞ AÇISI KATTIK. GÖKYÜZÜNDEN YAKALADIĞIMIZ HER KAREDE, HİKAYENİZİ EN BÜYÜLEYİCİ VE ETKİLEYİCİ ŞEKİLDE ANLATTIK.<br><br>
+                SİZİN MEMNUNİYETİNİZ, GÖKYÜZÜNDEKİ SANATIMIZI DAHA DA İLERİ TAŞIMAMIZ İÇİN EN BÜYÜK İLHAM KAYNAĞIMIZDIR. BU EŞSİZ DÜĞÜN GÜNÜNÜZDE, EN GÜZEL ANILARINIZI ÖLÜMSÜZLEŞTİRMEK BİZİM İÇİN BÜYÜK BİR AYRICALIKTI. MUTLULUĞUNUZ DAİM OLSUN!
+            </p>
+            <p class="mt-6 text-lg font-semibold text-gray-300 uppercase">
+                SEVGİ VE SAYGILARIMIZLA,<br>
+                <span class="text-xl font-extrabold text-gray-400">ŞİRKET ADI EKİBİ</span>
+            </p>
+        </div>
+
+        <!-- İletişim -->
+        <div class="bg-gray-950 text-white p-4 rounded-lg shadow-lg mt-2">
+            <div class="grid grid-cols-1 gap-4 text-sm justify-center">
+                <div class="text-center">
+                    <h3 class="text-base font-bold mb-1 text-white">BİZE ULAŞIN</h3>
+                    <p class="font-semibold mb-1 text-gray-200">Instagram:</p>
+                    <a href="https://instagram.com/sirketiniz" class="text-gray-300 hover:text-white transition-colors duration-200">@sirketiniz</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
