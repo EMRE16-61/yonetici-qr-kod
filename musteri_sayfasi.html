@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="pageTitle">Katalog</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #fff;
+        }
+    </style>
+</head>
+<body class="bg-white text-gray-900">
+    <div class="a4-page mx-auto max-w-screen-lg p-4">
+        <!-- Üstteki Marka Fotoğrafı -->
+        <div class="w-full h-48 bg-gray-200 rounded-lg flex items-center justify-center overflow-hidden shadow-sm">
+            <img
+                src="https://placehold.co/800x300/E0E0E0/333333?text=MARKANIZIN+FOTOSU"
+                alt="Markanızın Fotoğrafı"
+                class="w-full h-full object-cover"
+            />
+        </div>
+
+        <!-- Orta İçerik: Sol video rehberi + sağ QR kod -->
+        <div class="flex flex-col md:flex-row items-center justify-center gap-8 mt-6 flex-grow">
+            <!-- Sol Sütun -->
+            <div class="w-full md:w-1/2 lg:w-2/5 p-6 bg-red-800 rounded-lg shadow-md h-full flex flex-col justify-center">
+                <h3 class="text-lg font-semibold text-white mb-4">VİDEONUZU İNDİRME REHBERİ</h3>
+                <ol class="list-decimal list-inside space-y-3 text-gray-900">
+                    <li class="font-medium">
+                        <span class="text-gray-900">Hızlı Tarama:</span> <span class="text-white">Akıllı telefonunuzun kamerasını veya tercih ettiğiniz bir QR kod okuyucu uygulamasını kullanarak yukarıdaki özel kodu taratın.</span>
+                    </li>
+                    <li class="font-medium">
+                        <span class="text-gray-900">Bağlantıya Dokunun:</span> <span class="text-white">Tarama işlemi tamamlandığında ekranda beliren güvenli bağlantıya dokunarak videonuzun bulunduğu sayfaya yönlenin.</span>
+                    </li>
+                    <li class="font-medium">
+                        <span class="text-gray-900">Videonuzu Keşfedin:</span> <span class="text-white">Açılan sayfada, sizin için özel olarak hazırlanmış videoyu bulun ve seçin.</span>
+                    </li>
+                    <li class="font-medium">
+                        <span class="text-gray-900">Tek Tıkla İndirme:</span> <span class="text-white">Seçtiğiniz videonun altında yer alan "İndir" butonuna basarak videoyu cihazınıza kolayca kaydedin.</span>
+                    </li>
+                    <li class="font-medium">
+                        <span class="text-gray-900">Anın Keyfini Çıkarın:</span> <span class="text-white">Videonuz artık parmaklarınızın ucunda! İstediğiniz zaman, istediğiniz yerde izlemenin keyfini çıkarın.</span>
+                    </li>
+                </ol>
+            </div>
+
+            <!-- Sağ Sütun: QR Kod -->
+            <div class="w-full md:w-1/2 lg:w-3/5 flex flex-col items-center justify-center py-8">
+                <h2 class="text-3xl font-bold text-gray-800 mb-4 text-center">ÖZEL İÇERİĞİNİZE ERİŞİN</h2>
+                <div class="w-64 h-64 bg-gray-100 border-4 border-gray-950 rounded-lg flex items-center justify-center p-3 shadow-2xl">
+                    <img id="qrKod" src="https://placehold.co/300x300?text=QR+KOD+Yükleniyor" alt="QR Kod" class="w-full h-full object-contain" />
+                </div>
+                <p class="mt-4 text-base text-gray-700 text-center font-semibold uppercase">
+                    GÖKYÜZÜNDEN YAKALANAN EŞSİZ GÖRÜNTÜLERLE ÖLÜMSÜZLEŞTİRİLEN DİJİTAL HİKAYENİZİ KEŞFEDİN. KODU TARAYIN VE UNUTULMAZ BİR KEŞFE ÇIKIN!
+                </p>
+            </div>
+        </div>
+
+        <!-- Dinamik Metin Alanı -->
+        <div class="text-center bg-gray-900 p-8 rounded-lg shadow-md mt-6">
+            <h3 class="text-2xl font-bold text-white mb-4">BİZİ TERCİH ETTİĞİNİZ İÇİN TEŞEKKÜR EDERİZ!</h3>
+            <div id="dynamicText" class="text-base font-semibold text-gray-200 leading-relaxed uppercase">
+                <!-- Metin buraya dinamik olarak yüklenecek -->
+            </div>
+            <p class="mt-6 text-lg font-semibold text-gray-300 uppercase">
+                SEVGİ VE SAYGILARIMIZLA,<br>
+                <span class="text-xl font-extrabold text-gray-400">ŞİRKET ADI EKİBİ</span>
+            </p>
+        </div>
+
+        <!-- İletişim -->
+        <div class="bg-gray-950 text-white p-4 rounded-lg shadow-lg mt-2">
+            <div class="grid grid-cols-1 gap-4 text-sm justify-center">
+                <div class="text-center">
+                    <h3 class="text-base font-bold mb-1 text-white">BİZE ULAŞIN</h3>
+                    <p class="font-semibold mb-1 text-gray-200">Instagram:</p>
+                    <a href="https://instagram.com/sirketiniz" class="text-gray-300 hover:text-white transition-colors duration-200">@sirketiniz</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase kütüphaneleri -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Firebase yapılandırma objenizi buraya yapıştırın.
+        const firebaseConfig = {
+            apiKey: "AIzaSyAZxHq28my4VLR-xX94wvkr6Gf-ohyeH98",
+            authDomain: "e-y-yonetici.firebaseapp.com",
+            databaseURL: "https://e-y-yonetici-default-rtdb.firebaseio.com",
+            projectId: "e-y-yonetici",
+            storageBucket: "e-y-yonetici.firebasestorage.app",
+            messagingSenderId: "954162170596",
+            appId: "1:954162170596:web:f93d6ea49747ad67dafaf1",
+            measurementId: "G-8CBJM61ZTW"
+        };
+
+        // Firebase uygulamasını başlat
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // QR kodun ve dinamik metnin yükleneceği elemanları seç
+        const dynamicTextEl = document.getElementById('dynamicText');
+        const qrKodImg = document.getElementById('qrKod');
+        const pageTitleEl = document.getElementById('pageTitle');
+
+        // Metin şablonları
+        const weddingText = `
+            DEĞERLİ MÜŞTERİMİZ,<br><br>
+            HAYATINIZIN EN ÖZEL ANINIZI ÖLÜMSÜZLEŞTİRMEK İÇİN BİZİ TERCİH ETTİĞİNİZ İÇİN MİNNETTARIZ.<br><br>
+            GÖZ ALICI DRONE ÇEKİMLERİMİZLE, HİKAYENİZE EŞSİZ BİR BAKIŞ AÇISI KATTIK. GÖKYÜZÜNDEN YAKALADIĞIMIZ HER KAREDE, HİKAYENİZİ EN BÜYÜLEYİCİ VE ETKİLEYİCİ ŞEKİLDE ANLATTIK.<br><br>
+            SİZİN MEMNUNİYETİNİZ, GÖKYÜZÜNDEKİ SANATIMIZI DAHA DA İLERİ TAŞIMAMIZ İÇİN EN BÜYÜK İLHAM KAYNAĞIMIZDIR. BU EŞSİZ DÜĞÜN GÜNÜNÜZDE, EN GÜZEL ANILARINIZI ÖLÜMSÜZLEŞTİRMEK BİZİM İÇİN BÜYÜK BİR AYRICALIKTI. MUTLULUĞUNUZ DAİM OLSUN!
+        `;
+        const otherText = `
+            DEĞERLİ MÜŞTERİMİZ,<br><br>
+            HAYATINIZIN EN ÖZEL ANINIZI VE UNUTULMAZ DENEYİMLERİNİZİ ÖLÜMSÜZLEŞTİRMEK İÇİN BİZİ TERCİH ETTİĞİNİZ İÇİN MİNNETTARIZ.<br><br>
+            GÖZ ALICI DRONE ÇEKİMLERİMİZLE, HİKAYENİZE EŞSİZ BİR BAKIŞ AÇISI KATTIK. GÖKYÜZÜNDEN YAKALADIĞIMIZ HER KAREDE, ANLARINIZI EN BÜYÜLEYİCİ VE ETKİLEYİCİ ŞEKİLDE ANLATTIK.<br><br>
+            SİZİN MEMNUNİYETİNİZ, GÖKYÜZÜNDEKİ SANATIMIZI DAHA DA İLERİ TAŞIMAMIZ İÇİN EN BÜYÜK İLHAM KAYNAĞIMIZDIR. GELECEKTE DE BİRLİKTE DAHA NİCE NEFES KESİCİ GÖRÜNTÜLER VE UNUTULMAZ ANILAR YARATMAK DİLEĞİYLE, SİZİ YENİ PROJELERİMİZDE GÖRMEKTEN MUTLULUK DUYARIZ!
+        `;
+
+        // Sayfa yüklendiğinde URL'den verileri al ve metni yükle
+        document.addEventListener('DOMContentLoaded', async () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const reservationId = urlParams.get('id');
+            const eventType = urlParams.get('type');
+
+            if (reservationId && eventType) {
+                // QR Kod için bir video yükleme URL'i oluştur
+                // Bu örnekte yer tutucu bir URL kullanıyoruz. Gerçek bir projede buraya video yükleme sayfanızın URL'ini ekleyebilirsiniz.
+                const videoUploadUrl = `https://emre16-61.github.io/video-yukleme/?id=${reservationId}`;
+                const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(videoUploadUrl)}&size=300x300`;
+                qrKodImg.src = qrUrl;
+
+                // Etkinlik türüne göre doğru metni yükle
+                if (eventType === 'dugun') {
+                    dynamicTextEl.innerHTML = weddingText;
+                    pageTitleEl.textContent = "Düğün Kataloğu";
+                } else if (eventType === 'nisan_dis_cekim') {
+                    dynamicTextEl.innerHTML = otherText;
+                    pageTitleEl.textContent = "Nişan & Dış Çekim Kataloğu";
+                } else {
+                    // Diğer durumlar için varsayılan bir metin gösterebiliriz
+                    dynamicTextEl.innerHTML = "Geçersiz çekim türü.";
+                    pageTitleEl.textContent = "Hata";
+                }
+            } else {
+                dynamicTextEl.innerHTML = "Özel sayfa bulunamadı veya geçersiz bağlantı.";
+                qrKodImg.src = "https://placehold.co/300x300?text=Geçersiz+QR";
+            }
+        });
+    </script>
+</body>
+</html>
