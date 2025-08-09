@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>QR Belge Oluştur</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 text-gray-900 flex items-center justify-center min-h-screen">
+  <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
+    <h2 class="text-xl font-bold mb-6 text-center">📦 Firestore Belge Oluştur</h2>
+
+    <label class="block mb-2 font-semibold">Müşteri ID</label>
+    <input id="idInput" type="text" placeholder="örnek: 42PGx4oJC6PkQaO6HQhc" class="w-full p-2 border rounded mb-4">
+
+    <label class="block mb-2 font-semibold">Çekim Türü</label>
+    <select id="typeSelect" class="w-full p-2 border rounded mb-6">
+      <option value="DÜĞÜN">Düğün</option>
+      <option value="NİŞAN">Nişan</option>
+      <option value="DIŞ ÇEKİM">Dış Çekim</option>
+    </select>
+
+    <button onclick="addDocument()" class="w-full bg-red-700 text-white py-2 rounded font-bold hover:bg-red-800 transition">Belgeyi Oluştur</button>
+
+    <p id="status" class="mt-4 text-center text-sm text-gray-700 font-semibold"></p>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAZxHq28my4VLR-xX94wvkr6Gf-ohyeH98",
+      authDomain: "e-y-yonetici.firebaseapp.com",
+      projectId: "e-y-yonetici"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    async function addDocument() {
+      const id = document.getElementById("idInput").value.trim();
+      const type = document.getElementById("typeSelect").value;
+      const status = document.getElementById("status");
+
+      if (!id) {
+        status.textContent = "⚠️ Lütfen müşteri ID girin.";
+        return;
+      }
+
+      const qrLink = `https://emre16-61.github.io/yonetici-qr-kod/index.html?id=${id}`;
+      const displayText = "GÖKYÜZÜNDEN YAKALANAN EŞSİZ GÖRÜNTÜLERLE ÖLÜMSÜZLEŞTİRİLEN DİJİTAL HİKAYENİZİ KEŞFEDİN. KODU TARAYIN VE UNUTULMAZ BİR KEŞFE ÇIKIN!";
+      let thankYou = "";
+
+      if (type === "DÜĞÜN") {
+        thankYou = "DÜĞÜN GÖRÜNTÜLERİNİZİ KEŞFEDİN. KODU TARAYIN VE UNUTULMAZ BİR YOLCULUĞA ÇIKIN!";
+      } else {
+        thankYou = "GÖKYÜZÜNDEN YAKALANAN EŞSİZ GÖRÜNTÜLERLE ÖLÜMSÜZLEŞTİRİLEN DİJİTAL HİKAYENİZİ KEŞFEDİN. KODU TARAYIN VE UNUTULMAZ BİR KEŞFE ÇIKIN!";
+      }
+
+      try {
+        await setDoc(doc(db, "bekleyen_rezervasyonlar", id), {
+          qrCodeContent: qrLink,
+          qrCodeDisplayText: displayText,
+          thankYouMessage: thankYou
+        });
+        status.textContent = "✅ Belge başarıyla oluşturuldu.";
+      } catch (error) {
+        status.textContent = "❌ Hata oluştu: " + error.message;
+      }
+    }
+  </script>
+</body>
+</html>
