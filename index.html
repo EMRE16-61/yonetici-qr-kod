@@ -48,20 +48,18 @@
       }
 
       try {
-        const docRef = doc(db, "bekleyen_rezervasyonlar", id);
+        const docRef = doc(db, "artifacts/default-app-id/public/data/pending_reservations", id);
         const docSnap = await getDoc(docRef);
 
         if (docSnap.exists()) {
           const data = docSnap.data();
 
-          // QR kodu oluştur
           new QRCode(document.getElementById("qrcode"), {
             text: data.qrCodeContent,
             width: 128,
             height: 128
           });
 
-          // Metinleri göster
           document.getElementById("qrText").textContent = data.qrCodeDisplayText || "";
           document.getElementById("thankYou").textContent = data.thankYouMessage || "";
         } else {
