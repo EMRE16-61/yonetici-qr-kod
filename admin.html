@@ -28,6 +28,7 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
+    // Firebase yapılandırması, projenize göre güncellenmelidir.
     const firebaseConfig = {
       apiKey: "AIzaSyAZxHq28my4VLR-xX94wvkr6Gf-ohyeH98",
       authDomain: "e-y-yonetici.firebaseapp.com",
@@ -37,6 +38,7 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
+    // addDocument fonksiyonu, Firestore'a yeni bir belge ekler.
     async function addDocument() {
       const id = document.getElementById("idInput").value.trim();
       const type = document.getElementById("typeSelect").value;
@@ -47,16 +49,25 @@
         return;
       }
 
+      // QR kodu ve diğer metin içerikleri
       const qrLink = `https://emre16-61.github.io/yonetici-qr-kod/index.html?id=${id}`;
       const displayText = "GÖKYÜZÜNDEN YAKALANAN EŞSİZ GÖRÜNTÜLERLE ÖLÜMSÜZLEŞTİRİLEN DİJİTAL HİKAYENİZİ KEŞFEDİN. KODU TARAYIN VE UNUTULMAZ BİR KEŞFE ÇIKIN!";
-      let thankYou = "";
+      let thankYou;
 
-      if (type === "DÜĞÜN") {
-        thankYou = "DÜĞÜN GÖRÜNTÜLERİNİZİ KEŞFEDİN. KODU TARAYIN VE UNUTULMAZ BİR YOLCULUĞA ÇIKIN!";
-      } else {
-        thankYou = "GÖKYÜZÜNDEN YAKALANAN EŞSİZ GÖRÜNTÜLERLE ÖLÜMSÜZLEŞTİRİLEN DİJİTAL HİKAYENİZİ KEŞFEDİN. KODU TARAYIN VE UNUTULMAZ BİR KEŞFE ÇIKIN!";
+      // Çekim türüne göre teşekkür mesajını belirle
+      switch (type) {
+        case "DÜĞÜN":
+          thankYou = "DÜĞÜN GÖRÜNTÜLERİNİZİ KEŞFEDİN. KODU TARAYIN VE UNUTULMAZ BİR YOLCULUĞA ÇIKIN!";
+          break;
+        case "NİŞAN":
+        case "DIŞ ÇEKİM":
+          thankYou = "GÖKYÜZÜNDEN YAKALANAN EŞSİZ GÖRÜNTÜLERLE ÖLÜMSÜZLEŞTİRİLEN DİJİTAL HİKAYENİZİ KEŞFEDİN. KODU TARAYIN VE UNUTULMAZ BİR KEŞFE ÇIKIN!";
+          break;
+        default:
+          thankYou = "Dijital hikayenizi keşfetmek için kodu tarayın.";
       }
 
+      // Firestore'a belge ekleme
       try {
         await setDoc(doc(db, "bekleyen_rezervasyonlar", id), {
           qrCodeContent: qrLink,
@@ -66,6 +77,7 @@
         status.textContent = "✅ Belge başarıyla oluşturuldu.";
       } catch (error) {
         status.textContent = "❌ Hata oluştu: " + error.message;
+        console.error("Hata:", error);
       }
     }
   </script>
