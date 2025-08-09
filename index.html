@@ -4,10 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>QR Panel</title>
+  <script src="https://cdn.tailwindcss.com"></script>
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
     body {
       text-align: center;
-      font-family: sans-serif;
+      font-family: 'Inter', sans-serif;
       background: #f4f4f4;
     }
     #qrcode {
@@ -15,47 +17,80 @@
     }
   </style>
 </head>
-<body>
+<body class="bg-gray-100 min-h-screen flex flex-col items-center justify-center p-4">
 
-  <h1 style="margin-top: 40px; font-size: 24px; color: #333;">📌 Kişiye Özel QR Kod</h1>
-  <div id="qrcode"></div>
+  <div class="bg-white p-8 rounded-lg shadow-xl max-w-sm w-full">
+    <h1 class="text-3xl font-bold text-gray-800 mb-6">📌 Kişiye Özel QR Kod</h1>
+    <div id="qrcode" class="flex justify-center mb-6"></div>
+    <p id="qrText" class="text-lg font-semibold text-center mt-6 text-gray-700"></p>
+    <p id="thankYou" class="text-sm text-center mt-2 text-gray-500"></p>
+  </div>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
+    // Firebase yapılandırma bilgileri
     const firebaseConfig = {
       apiKey: "AIzaSyAZxHq28my4VLR-xX94wvkr6Gf-ohyeH98",
       authDomain: "e-y-yonetici.firebaseapp.com",
       projectId: "e-y-yonetici"
     };
 
+    // Firebase'i başlatma ve Firestore'u alma
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    const params = new URLSearchParams(window.location.search);
-    const id = params.get("id");
+    // URL parametrelerini alarak 'id' değerini çıkarma
+    const urlParams = new URLSearchParams(window.location.search);
+    const id = urlParams.get("id");
 
-    if (id) {
-      const ref = doc(db, "artifacts/default-app-id/public/data/pending_reservations", id);
-      getDoc(ref).then((docSnap) => {
+    // Firestore'dan veri çekme fonksiyonu
+    async function fetchData() {
+      if (!id) {
+        document.getElementById("qrText").textContent = "❌ Kimlik bilgisi eksik.";
+        return;
+      }
+
+      // Firestore'da belirtilen belgeye referans oluşturma
+      const docRef = doc(db, "bekleyen_rezervasyonlar", id);
+      
+      try {
+        // Belgeyi Firestore'dan çekme
+        const docSnap = await getDoc(docRef);
+
+        // Belgenin var olup olmadığını kontrol etme
         if (docSnap.exists()) {
+          const data = docSnap.data();
+          
+          // Verileri ilgili HTML elementlerine yerleştirme
+          document.getElementById("qrText").textContent = data.qrCodeDisplayText || "Metin bulunamadı.";
+          document.getElementById("thankYou").textContent = data.thankYouMessage || "Teşekkür mesajı bulunamadı.";
+          
+          // QR kodu oluşturma
           const qrDiv = document.getElementById("qrcode");
-          if (qrDiv) {
-            const qrScript = document.createElement("script");
-            qrScript.src = "https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js";
-            qrScript.onload = () => {
-              new QRCode(qrDiv, {
-                text: `https://eyhavacilik.com/qr?id=${id}`,
-                width: 128,
-                height: 128
-              });
-            };
-            document.body.appendChild(qrScript);
+          if (qrDiv && data.qrCodeContent) {
+            new QRCode(qrDiv, {
+              text: data.qrCodeContent, // Burası güncellendi.
+              width: 128,
+              height: 128
+            });
           }
+        } else {
+          // Belge bulunamadıysa hata mesajı gösterme
+          document.getElementById("qrText").textContent = "❌ Veri bulunamadı.";
+          console.log("Belge bulunamadı!");
         }
-      });
+      } catch (error) {
+        // Hata durumunda konsola ve ekrana hata mesajı yazdırma
+        document.getElementById("qrText").textContent = "❌ Veri çekerken bir hata oluştu.";
+        console.error("Veri çekme hatası: ", error);
+      }
     }
+
+    // Sayfa yüklendiğinde fetchData fonksiyonunu çağırma
+    fetchData();
   </script>
 
 </body>
