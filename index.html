@@ -211,8 +211,13 @@
       }
 
       const data = docSnap.data();
-      const service = (data.serviceType || "").toLowerCase();
-      const tmpl = (service === "dugun") ? document.getElementById("tmpl-dugun") : document.getElementById("tmpl-nisan");
+      const hizmet = (data.hizmet || "").toLowerCase();
+      if (data.customHtml) {
+        content.innerHTML = data.customHtml;
+        return;
+      }
+      const service = hizmet;
+      const tmpl = (service.includes("düğün") || service.includes("dugun")) ? document.getElementById("tmpl-dugun") : document.getElementById("tmpl-nisan");
       const clone = tmpl.content.cloneNode(true);
       content.innerHTML = "";
       content.appendChild(clone);
