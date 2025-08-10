@@ -1,33 +1,158 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-  <meta charset="UTF-8">
-  <title>Kişiye Özel QR Sayfası</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Katalog - Kişiye Özel QR</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    body {
-      font-family: 'Inter', sans-serif;
-      background-color: #f4f4f4;
-      text-align: center;
-    }
-    #qrcode {
-      margin: 20px auto;
-    }
-  </style>
-</head>
-<body class="flex flex-col items-center justify-center min-h-screen p-4">
-
-  <div class="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
-    <h1 class="text-2xl font-bold text-gray-800 mb-4">📌 Kişiye Özel QR Kod</h1>
-    <div id="qrcode" class="mb-4"></div>
-    <p id="qrText" class="text-lg font-semibold text-gray-700"></p>
-    <div id="thankYou" class="text-center bg-gray-900 p-8 rounded-lg shadow-md mt-6"></div>
-  </div>
-
+  <!-- QRCode non-module (creates window.QRCode) -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+<body class="bg-white text-gray-900">
+  <!-- Hidden templates (scripts removed) -->
+  <template id="tmpl-dugun">
+<div class="a4-page mx-auto max-w-screen-lg p-4">
+        <div class="w-full h-48 bg-gray-200 rounded-lg flex items-center justify-center overflow-hidden shadow-sm">
+            <img
+                src="https://placehold.co/800x300/E0E0E0/333333?text=MARKANIZIN+FOTOSU"
+                alt="Markanızın Fotoğrafı"
+                class="w-full h-full object-cover"
+            />
+        </div>
+
+        <div class="flex flex-col md:flex-row items-center justify-center gap-8 mt-6 flex-grow">
+            <div class="w-full md:w-1/2 lg:w-2/5 p-6 bg-red-800 rounded-lg shadow-md h-full flex flex-col justify-center">
+                <h3 class="text-lg font-semibold text-white mb-4">VİDEONUZU İNDİRME REHBERİ</h3>
+                <ol class="list-decimal list-inside space-y-3 text-gray-900">
+                    <li class="font-medium">
+                        <span class="text-gray-900">Hızlı Tarama:</span> <span class="text-white">Akıllı telefonunuzun kamerasını veya tercih ettiğiniz bir QR kod okuyucu uygulamasını kullanarak yukarıdaki özel kodu taratın.</span>
+                    </li>
+                    <li class="font-medium">
+                        <span class="text-gray-900">Bağlantıya Dokunun:</span> <span class="text-white">Tarama işlemi tamamlandığında ekranda beliren güvenli bağlantıya dokunarak videonuzun bulunduğu sayfaya yönlenin.</span>
+                    </li>
+                    <li class="font-medium">
+                        <span class="text-gray-900">Videonuzu Keşfedin:</span> <span class="text-white">Açılan sayfada, sizin için özel olarak hazırlanmış videoyu bulun ve seçin.</span>
+                    </li>
+                    <li class="font-medium">
+                        <span class="text-gray-900">Tek Tıkla İndirme:</span> <span class="text-white">Seçtiğiniz videonun altında yer alan "İndir" butonuna basarak videoyu cihazınıza kolayca kaydedin.</span>
+                    </li>
+                    <li class="font-medium">
+                        <span class="text-gray-900">Anın Keyfini Çıkarın:</span> <span class="text-white">Videonuz artık parmaklarınızın ucunda! İstediğiniz zaman, istediğiniz yerde izlemenin keyfini çıkarın.</span>
+                    </li>
+                </ol>
+            </div>
+
+            <div class="w-full md:w-1/2 lg:w-3/5 flex flex-col items-center justify-center py-8">
+                <h2 class="text-3xl font-bold text-gray-800 mb-4 text-center">ÖZEL İÇERİĞİNİZE ERİŞİN</h2>
+                <div class="w-64 h-64 bg-gray-100 border-4 border-gray-950 rounded-lg flex items-center justify-center p-3 shadow-2xl">
+                    <div id="qrcode"></div>
+                </div>
+                <p id="qrCodeDisplayText" class="mt-4 text-base text-gray-700 text-center font-semibold uppercase">
+                    GÖKYÜZÜNDEN YAKALANAN EŞSİZ GÖRÜNTÜLERLE ÖLÜMSÜZLEŞTİRİLEN DİJİTAL HİKAYENİZİ KEŞFEDİN. KODU TARAYIN VE UNUTULMAZ BİR KEŞFE ÇIKIN!
+                </p>
+            </div>
+        </div>
+
+        <div class="text-center bg-gray-900 p-8 rounded-lg shadow-md mt-6">
+            <h3 class="text-2xl font-bold text-white mb-4">BİZİ TERCİH ETTİĞİNİZ İÇİN TEŞEKKÜR EDERİZ!</h3>
+            <p id="thankYouMessage" class="text-base font-semibold text-gray-200 leading-relaxed uppercase">
+                DEĞERLİ MÜŞTERİMİZ,<br><br>
+                HAYATINIZIN EN ÖZEL ANINIZI ÖLÜMSÜZLEŞTİRMEK İÇİN BİZİ TERCİH ETTİĞİNİZ İÇİN MİNNETTARIZ.<br><br>
+                GÖZ ALICI DRONE ÇEKİMLERİMİZLE, HİKAYENİZE EŞSİZ BİR BAKIŞ AÇISI KATTIK. GÖKYÜZÜNDEN YAKALADIĞIMIZ HER KAREDE, HİKAYENİZİ EN BÜYÜLEYİCİ VE ETKİLEYİCİ ŞEKİLDE ANLATTIK.<br><br>
+                SİZİN MEMNUNİYETİNİZ, GÖKYÜZÜNDEKİ SANATIMIZI DAHA DA İLERİ TAŞIMAMIZ İÇİN EN BÜYÜK İLHAM KAYNAĞIMIZDIR. BU EŞSİZ DÜĞÜN GÜNÜNÜZDE, EN GÜZEL ANILARINIZI ÖLÜMSÜZLEŞTİRMEK BİZİM İÇİN BÜYÜK BİR AYRICALIKTI. MUTLULUĞUNUZ DAİM OLSUN!
+            </p>
+            <p class="mt-6 text-lg font-semibold text-gray-300 uppercase">
+                SEVGİ VE SAYGILARIMIZLA,<br>
+                <span class="text-xl font-extrabold text-gray-400">ŞİRKET ADI EKİBİ</span>
+            </p>
+        </div>
+
+        <div class="bg-gray-950 text-white p-4 rounded-lg shadow-lg mt-2">
+            <div class="grid grid-cols-1 gap-4 text-sm justify-center">
+                <div class="text-center">
+                    <h3 class="text-base font-bold mb-1 text-white">BİZE ULAŞIN</h3>
+                    <p class="font-semibold mb-1 text-gray-200">Instagram:</p>
+                    <a href="https://instagram.com/sirketiniz" class="text-gray-300 hover:text-white transition-colors duration-200">@sirketiniz</a>
+                </div>
+            </div>
+        </div>
+    </div>
+  </template>
+
+  <template id="tmpl-nisan">
+<div class="a4-page mx-auto max-w-screen-lg p-4">
+        <div class="w-full h-48 bg-gray-200 rounded-lg flex items-center justify-center overflow-hidden shadow-sm">
+            <img
+                src="https://placehold.co/800x300/E0E0E0/333333?text=MARKANIZIN+FOTOSU"
+                alt="Markanızın Fotoğrafı"
+                class="w-full h-full object-cover"
+            />
+        </div>
+
+        <div class="flex flex-col md:flex-row items-center justify-center gap-8 mt-6 flex-grow">
+            <div class="w-full md:w-1/2 lg:w-2/5 p-6 bg-red-800 rounded-lg shadow-md h-full flex flex-col justify-center">
+                <h3 class="text-lg font-semibold text-white mb-4">VİDEONUZU İNDİRME REHBERİ</h3>
+                <ol class="list-decimal list-inside space-y-3 text-gray-900">
+                    <li class="font-medium">
+                        <span class="text-gray-900">Hızlı Tarama:</span> <span class="text-white">Akıllı telefonunuzun kamerasını veya tercih ettiğiniz bir QR kod okuyucu uygulamasını kullanarak yukarıdaki özel kodu taratın.</span>
+                    </li>
+                    <li class="font-medium">
+                        <span class="text-gray-900">Bağlantıya Dokunun:</span> <span class="text-white">Tarama işlemi tamamlandığında ekranda beliren güvenli bağlantıya dokunarak videonuzun bulunduğu sayfaya yönlenin.</span>
+                    </li>
+                    <li class="font-medium">
+                        <span class="text-gray-900">Videonuzu Keşfedin:</span> <span class="text-white">Açılan sayfada, sizin için özel olarak hazırlanmış videoyu bulun ve seçin.</span>
+                    </li>
+                    <li class="font-medium">
+                        <span class="text-gray-900">Tek Tıkla İndirme:</span> <span class="text-white">Seçtiğiniz videonun altında yer alan "İndir" butonuna basarak videoyu cihazınıza kolayca kaydedin.</span>
+                    </li>
+                    <li class="font-medium">
+                        <span class="text-gray-900">Anın Keyfini Çıkarın:</span> <span class="text-white">Videonuz artık parmaklarınızın ucunda! İstediğiniz zaman, istediğiniz yerde izlemenin keyfini çıkarın.</span>
+                    </li>
+                </ol>
+            </div>
+
+            <div class="w-full md:w-1/2 lg:w-3/5 flex flex-col items-center justify-center py-8">
+                <h2 class="text-3xl font-bold text-gray-800 mb-4 text-center">ÖZEL İÇERİĞİNİZE ERİŞİN</h2>
+                <div class="w-64 h-64 bg-gray-100 border-4 border-gray-950 rounded-lg flex items-center justify-center p-3 shadow-2xl">
+                    <div id="qrcode"></div>
+                </div>
+                <p id="qrCodeDisplayText" class="mt-4 text-base text-gray-700 text-center font-semibold uppercase">
+                    GÖKYÜZÜNDEN YAKALANAN EŞSİZ GÖRÜNTÜLERLE ÖLÜMSÜZLEŞTİRİLEN DİJİTAL HİKAYENİZİ KEŞFEDİN. KODU TARAYIN VE UNUTULMAZ BİR KEŞFE ÇIKIN!
+                </p>
+            </div>
+        </div>
+
+        <div class="text-center bg-gray-900 p-8 rounded-lg shadow-md mt-6">
+            <h3 class="text-2xl font-bold text-white mb-4">BİZİ TERCİH ETTİĞİNİZ İÇİN TEŞEKKÜR EDERİZ!</h3>
+            <p id="thankYouMessage" class="text-base font-semibold text-gray-200 leading-relaxed uppercase">
+                DEĞERLİ MÜŞTERİMİZ<br><br>
+                HAYATINIZIN EN ÖZEL ANINIZI VE UNUTULMAZ DENEYİMLERİNİZİ ÖLÜMSÜZLEŞTİRMEK İÇİN BİZİ TERCİH ETTİĞİNİZ İÇİN MİNNETTARIZ.<br><br>
+                GÖZ ALICI DRONE ÇEKİMLERİMİZLE, HİKAYENİZE EŞSİZ BİR BAKIŞ AÇISI KATTIK. GÖKYÜZÜNDEN YAKALADIĞIMIZ HER KAREDE, ANLARINIZI EN BÜYÜLEYİCİ VE ETKİLEYİCİ ŞEKİLDE ANLATTIK.<br><br>
+                SİZİN MEMNUNİYETİNİZ, GÖKYÜZÜNDEKİ SANATIMIZI DAHA DA İLERİ TAŞIMAMIZ İÇİN EN BÜYÜK İLHAM KAYNAĞIMIZDIR. GELECEKTE DE BİRLİKTE DAHA NİCE NEFES KESİCİ GÖRÜNTÜLER VE UNUTULMAZ ANILAR YARATMAK DİLEĞİYLE,<br> SİZİ YENİ PROJELERİMİZDE GÖRMEKTEN MUTLULUK DUYARIZ!
+            </p>
+            <p class="mt-6 text-lg font-semibold text-gray-300 uppercase">
+                SEVGİ VE SAYGILARIMIZLA<br>
+                <span class="text-xl font-extrabold text-gray-400">EKİBİ</span>
+            </p>
+        </div>
+
+        <div class="bg-gray-950 text-white p-4 rounded-lg shadow-lg mt-2">
+            <div class="grid grid-cols-1 gap-4 text-sm justify-center">
+                <div class="text-center">
+                    <h3 class="text-base font-bold mb-1 text-white">BİZE ULAŞIN</h3>
+                    <p class="font-semibold mb-1 text-gray-200">Instagram:</p>
+                    <a href="https://instagram.com/sirketiniz" class="text-gray-300 hover:text-white transition-colors duration-200">@sirketiniz</a>
+                </div>
+            </div>
+        </div>
+    </div>
+  </template>
+
+  <div id="content" class="min-h-screen p-4"></div>
+
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyAZxHq28my4VLR-xX94wvkr6Gf-ohyeH98",
@@ -38,49 +163,86 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    const urlParams = new URLSearchParams(window.location.search);
-    const id = urlParams.get("id");
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get("id");
 
-    async function fetchData() {
+    async function tryPaths(paths) {
+      for (const p of paths) {
+        try {
+          const ref = doc(db, p, id);
+          const snap = await getDoc(ref);
+          if (snap.exists()) return snap;
+        } catch (e) {
+          console.warn("Path failed:", p, e);
+        }
+      }
+      return null;
+    }
+
+    async function load() {
+      const content = document.getElementById("content");
       if (!id) {
-        document.getElementById("qrText").textContent = "❌ ID eksik.";
+        content.innerHTML = `<div class="max-w-xl mx-auto p-6 bg-white rounded shadow"><p class="text-red-600 font-semibold">❌ ID eksik. Lütfen URL'ye ?id=... ekleyin.</p></div>`;
         return;
       }
 
-      try {
-        const docRef = doc(db, "pending_reservations", id); // Firestore yolu düzeltildi
-        const docSnap = await getDoc(docRef);
+      // Try likely collection paths (adjust if your Firestore uses different path)
+      const possiblePaths = [
+        "pending_reservations",
+        "artifacts/default-app-id/public/data/pending_reservations"
+      ];
 
-        if (docSnap.exists()) {
-          const data = docSnap.data();
-
-          new QRCode(document.getElementById("qrcode"), {
-            text: data.qrCodeContent,
-            width: 128,
-            height: 128
-          });
-
-          document.getElementById("qrText").textContent = data.qrCodeDisplayText || "";
-          
-          if (data.thankYouMessage) {
-            document.getElementById("thankYou").innerHTML = `
-              <h3 class="text-2xl font-bold text-white mb-4">BİZİ TERCİH ETTİĞİNİZ İÇİN TEŞEKKÜR EDERİZ!</h3>
-              <p class="text-base font-semibold text-gray-200 leading-relaxed uppercase">
-                ${data.thankYouMessage}
-              </p>
-            `;
-          }
-
-        } else {
-          document.getElementById("qrText").textContent = "❌ Veri bulunamadı.";
+      // Try each path: note Firestore doc() requires collection path then doc id
+      // We'll attempt to getDoc for each constructed ref
+      let docSnap = null;
+      for (const p of possiblePaths) {
+        try {
+          const ref = doc(db, p, id);
+          docSnap = await getDoc(ref);
+          if (docSnap.exists()) break;
+        } catch (err) {
+          console.warn("Hata path denemesinde:", p, err);
         }
-      } catch (error) {
-        document.getElementById("qrText").textContent = "❌ Veri çekerken bir hata oluştu.";
-        console.error("Hata:", error);
       }
+
+      if (!docSnap || !docSnap.exists()) {
+        content.innerHTML = `<div class="max-w-xl mx-auto p-6 bg-white rounded shadow"><p class="text-red-600 font-semibold">❌ Veri bulunamadı (tanımlanan path'lerde).</p><p class="text-sm mt-2 text-gray-600">Firestore path'iniz farklıysa söyleyin, ben düzenleyeyim.</p></div>`;
+        return;
+      }
+
+      const data = docSnap.data();
+      const service = (data.serviceType || "").toLowerCase();
+      const tmpl = (service === "dugun") ? document.getElementById("tmpl-dugun") : document.getElementById("tmpl-nisan");
+      const clone = tmpl.content.cloneNode(true);
+      content.innerHTML = "";
+      content.appendChild(clone);
+
+      // After template inserted, wire up dynamic parts
+      // QR kod: use data.qrCodeContent or fallback to katalog.html?id=...
+      const qrDiv = document.getElementById("qrcode");
+      try {
+        if (qrDiv) {
+          const text = data.qrCodeContent || ("katalog.html?id=" + id);
+          // clear existing children
+          qrDiv.innerHTML = "";
+          new window.QRCode(qrDiv, { text, width: 180, height: 180 });
+        }
+      } catch (e) {
+        console.error("QR oluşturma hatası:", e);
+      }
+
+      // Dynamic texts
+      const disp = document.getElementById("qrCodeDisplayText");
+      if (disp && data.qrCodeDisplayText) disp.textContent = data.qrCodeDisplayText;
+
+      const thank = document.getElementById("thankYouMessage");
+      if (thank && data.thankYouMessage) thank.innerHTML = data.thankYouMessage;
+
+      // If you want to auto-open katalog link in new tab (not recommended), uncomment:
+      // if (data.qrCodeContent) window.open(data.qrCodeContent, "_blank");
     }
 
-    fetchData();
+    load();
   </script>
 </body>
 </html>
