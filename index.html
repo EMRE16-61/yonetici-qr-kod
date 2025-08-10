@@ -21,7 +21,7 @@
     <h1 class="text-2xl font-bold text-gray-800 mb-4">📌 Kişiye Özel QR Kod</h1>
     <div id="qrcode" class="mb-4"></div>
     <p id="qrText" class="text-lg font-semibold text-gray-700"></p>
-    <p id="thankYou" class="text-sm text-gray-500 mt-2"></p>
+    <div id="thankYou" class="text-center bg-gray-900 p-8 rounded-lg shadow-md mt-6"></div>
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -48,7 +48,7 @@
       }
 
       try {
-        const docRef = doc(db, "artifacts/default-app-id/public/data/pending_reservations", id);
+        const docRef = doc(db, "pending_reservations", id); // Firestore yolu düzeltildi
         const docSnap = await getDoc(docRef);
 
         if (docSnap.exists()) {
@@ -61,7 +61,16 @@
           });
 
           document.getElementById("qrText").textContent = data.qrCodeDisplayText || "";
-          document.getElementById("thankYou").textContent = data.thankYouMessage || "";
+          
+          if (data.thankYouMessage) {
+            document.getElementById("thankYou").innerHTML = `
+              <h3 class="text-2xl font-bold text-white mb-4">BİZİ TERCİH ETTİĞİNİZ İÇİN TEŞEKKÜR EDERİZ!</h3>
+              <p class="text-base font-semibold text-gray-200 leading-relaxed uppercase">
+                ${data.thankYouMessage}
+              </p>
+            `;
+          }
+
         } else {
           document.getElementById("qrText").textContent = "❌ Veri bulunamadı.";
         }
