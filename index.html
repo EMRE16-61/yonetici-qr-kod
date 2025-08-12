@@ -5,11 +5,9 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Katalog - Kişiye Özel QR</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- QRCode non-module (creates window.QRCode) -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
 <body class="bg-white text-gray-900">
-  <!-- Hidden templates (scripts removed) -->
   <template id="tmpl-dugun">
 <div class="a4-page mx-auto max-w-screen-lg p-4">
         <div class="w-full h-48 bg-gray-200 rounded-lg flex items-center justify-center overflow-hidden shadow-sm">
@@ -148,6 +146,15 @@
     </div>
   </template>
 
+  <template id="tmpl-discekim">
+    <div class="a4-page mx-auto max-w-screen-lg p-4">
+      <h2 class="text-3xl font-bold text-gray-800 mb-4 text-center">DIŞ ÇEKİM İÇERİĞİNİZE ERİŞİN</h2>
+      <p class="text-base text-gray-700 text-center font-semibold uppercase">GÖKYÜZÜNDEN YAKALANAN DOĞAL GÖRÜNTÜLERLE HİKAYENİZİ KEŞFEDİN.</p>
+      <div id="qrcode" class="mt-6 flex justify-center"></div>
+      <p id="thankYouMessage" class="mt-6 text-center text-gray-600">Sade, bozulmaz ve otomatik!</p>
+    </div>
+  </template>
+
   <div id="content" class="min-h-screen p-4"></div>
 
   <script type="module">
@@ -211,13 +218,27 @@
       }
 
       const data = docSnap.data();
-      const hizmet = (data.hizmet || "").toLowerCase();
-      if (data.customHtml) {
-        content.innerHTML = data.customHtml;
-        return;
+      const hizmet = (data.hizmet || "").toUpperCase().trim();
+      let tmpl = null;
+
+      if (data.blocked === true) {
+          content.innerHTML = `
+            <div class="max-w-xl mx-auto p-6 bg-white rounded shadow">
+              <p class="text-red-600 font-semibold">❌ Bu içerik bloke edildi.</p>
+            </div>`;
+          return;
       }
-      const service = hizmet;
-      const tmpl = (service.includes("düğün") || service.includes("dugun")) ? document.getElementById("tmpl-dugun") : document.getElementById("tmpl-nisan");
+
+      if (hizmet === "DÜĞÜN ÇEKİMİ") {
+          tmpl = document.getElementById("tmpl-dugun");
+      } else if (hizmet === "NİŞAN ÇEKİMİ") {
+          tmpl = document.getElementById("tmpl-nisan");
+      } else if (hizmet === "DIŞ ÇEKİM") {
+          tmpl = document.getElementById("tmpl-discekim");
+      } else {
+          tmpl = document.getElementById("tmpl-nisan"); // default olarak nisan açsın istersen
+      }
+      
       const clone = tmpl.content.cloneNode(true);
       content.innerHTML = "";
       content.appendChild(clone);
@@ -235,16 +256,6 @@
       } catch (e) {
         console.error("QR oluşturma hatası:", e);
       }
-
-      // Dynamic texts
-      const disp = document.getElementById("qrCodeDisplayText");
-      if (disp && data.qrCodeDisplayText) disp.textContent = data.qrCodeDisplayText;
-
-      const thank = document.getElementById("thankYouMessage");
-      if (thank && data.thankYouMessage) thank.innerHTML = data.thankYouMessage;
-
-      // If you want to auto-open katalog link in new tab (not recommended), uncomment:
-      // if (data.qrCodeContent) window.open(data.qrCodeContent, "_blank");
     }
 
     load();
